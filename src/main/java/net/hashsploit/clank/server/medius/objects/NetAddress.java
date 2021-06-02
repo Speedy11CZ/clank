@@ -1,12 +1,16 @@
 package net.hashsploit.clank.server.medius.objects;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import net.hashsploit.clank.server.medius.MediusSerializableObject;
+import net.hashsploit.clank.server.medius.test.NetInput;
+import net.hashsploit.clank.server.medius.test.NetOutput;
 import net.hashsploit.clank.server.scert.SCERTConstants;
 import net.hashsploit.clank.server.scert.SCERTObject;
 import net.hashsploit.clank.utils.Utils;
 
-public class NetAddress extends SCERTObject {
+public class NetAddress implements MediusSerializableObject {
 	
 	public final NetAddressType type;
 	public final String address;
@@ -16,6 +20,17 @@ public class NetAddress extends SCERTObject {
 		this.type = type;
 		this.address = address;
 		this.port = port;
+	}
+
+	@Override
+	public void deserialize(NetInput netInput) throws IOException {
+	}
+
+	@Override
+	public void serialize(NetOutput netOutput) throws IOException {
+		netOutput.writeInt(type.getValue());
+		netOutput.writeString(address, 16);
+		netOutput.writeInt(port);
 	}
 
 	public NetAddressType getType() {
@@ -29,27 +44,13 @@ public class NetAddress extends SCERTObject {
 	public int getPort() {
 		return port;
 	}
-	
+
 	@Override
-	public byte[] serialize() {
-		ByteBuffer buffer = ByteBuffer.allocate(4 + SCERTConstants.NET_MAX_NETADDRESS_LENGTH.getValue() + 4);
-		
-		buffer.put(Utils.intToBytesLittle(type.getValue()));
-		
-		final byte[] ipAddr = address.getBytes();
-		final int numZeros = 16 - address.length();
-		final String zeroString = new String(new char[numZeros]).replace("\0", "00");
-		final byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
-		
-		buffer.put(ipAddr);
-		buffer.put(zeroTrail);
-		buffer.put(Utils.intToBytesLittle(port));
-		
-		return buffer.array();
+	public String toString() {
+		return "NetAddress{" +
+				"type=" + type.name() +
+				", address='" + address + '\'' +
+				", port=" + port +
+				'}';
 	}
-	
-	public void deserialize(byte[] data) {
-		
-	}
-	
 }

@@ -1,11 +1,13 @@
 package net.hashsploit.clank.server.medius.objects;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import net.hashsploit.clank.server.medius.MediusSerializableObject;
+import net.hashsploit.clank.server.medius.test.NetInput;
+import net.hashsploit.clank.server.medius.test.NetOutput;
 import net.hashsploit.clank.utils.Utils;
 
-public class NetConnectionInfo {
+public class NetConnectionInfo implements MediusSerializableObject {
 	
 	private final NetConnectionType netConnectionType; // 4 bytes
 	private final NetAddressList addressList; // 24 + 24 = 48 bytes
@@ -22,18 +24,39 @@ public class NetConnectionInfo {
 		this.sessionKey = sessionKey;
 		this.accessKey = accessKey;
 	}
-	
-	public String toString() {
-		return "NetConnectionInfo: \n" + 
-				"netConnectionType: " + Utils.bytesToHex(Utils.intToBytesLittle(netConnectionType.getValue())) + '\n' + 
-				"addressList.getFirst() : " + Utils.bytesToHex(addressList.getFirst().serialize()) + '\n' + 
-				"addressList.getSecond(): " + Utils.bytesToHex(addressList.getSecond().serialize()) + '\n' +
-				"worldId: " + Utils.bytesToHex(Utils.intToBytesLittle(worldId)) + '\n' + 
-				"serverKey: " + Utils.bytesToHex(serverKey) + '\n' + 
-				"sessionKey: " + Utils.bytesToHex(sessionKey) + '\n' + 
-				"accessKey: " + Utils.bytesToHex(accessKey);
+
+	@Override
+	public void deserialize(NetInput netInput) {
+
 	}
-	
+
+	@Override
+	public void serialize(NetOutput netOutput) throws IOException {
+		netOutput.writeInt(netConnectionType.getValue());
+		netOutput.writeObject(addressList);
+		netOutput.writeInt(worldId);
+		netOutput.writeBytes(serverKey);
+		netOutput.writeBytes(sessionKey);
+		netOutput.writeBytes(accessKey);
+		netOutput.skipBytes(2);
+	}
+
+	public byte[] serialize() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String toString() {
+		return "NetConnectionInfo{" +
+				"netConnectionType=" + netConnectionType.name() +
+				", addressList=" + addressList.toString() +
+				", worldId=" + worldId +
+				", serverKey=" + Utils.bytesToHex(serverKey) +
+				", sessionKey=" + Utils.bytesToHex(sessionKey) +
+				", accessKey=" + Utils.bytesToHex(accessKey) +
+				'}';
+	}
+
 	/**
 	 * Get the Net Connection Type.
 	 * @return
@@ -81,45 +104,4 @@ public class NetConnectionInfo {
 	public byte[] getAccessKey() {
 		return accessKey;
 	}
-	
-	
-	/**
-	 * Serialize this object to be sent.
-	 * @return
-	 */
-	public byte[] serialize() {
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		
-		try {
-			// NetConnectionType (4 bytes)
-			outputStream.write(Utils.intToBytesLittle(netConnectionType.getValue()));
-			
-			// NetAddressList[0] (24 bytes)
-			outputStream.write(addressList.getFirst().serialize());
-			
-			// NetAddressList[1] (24 bytes)
-			outputStream.write(addressList.getSecond().serialize());
-			
-			// WorldId (4 bytes)
-			outputStream.write(Utils.intToBytesLittle(worldId));
-			
-			// RSA Key / Server Key (64 bytes)
-			outputStream.write(serverKey);
-			
-			// Session Key (17 bytes)
-			outputStream.write(sessionKey);
-			
-			// Access Key (17 bytes)
-			outputStream.write(accessKey);
-			
-			// 2 bytes of padding to be 4-byte aligned
-			outputStream.write(Utils.hexStringToByteArray("0000"));
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return outputStream.toByteArray();
-	}
-
 }

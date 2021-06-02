@@ -1,5 +1,7 @@
 package net.hashsploit.clank.rt.handlers;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,9 +11,10 @@ import net.hashsploit.clank.rt.serializers.RT_ClientAppToServer;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
-import net.hashsploit.clank.server.medius.MediusMessageType;
-import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.test.MediusPacket;
+import net.hashsploit.clank.server.medius.test.MediusPacketHandler;
+import net.hashsploit.clank.server.medius.test.NetInput;
 import net.hashsploit.clank.utils.Utils;
 
 public class RtMsgClientAppToServer extends RtMessageHandler {
@@ -40,18 +43,43 @@ public class RtMsgClientAppToServer extends RtMessageHandler {
 		logger.finest("--------- MEDIUS TYPE: " + reqPacket.getMediusMessageType().name());
 		
 		List<RTMessage> responses = new ArrayList<RTMessage>();
-		
+
+
+
+		MediusPacketHandler mediusPacketTest = client.getMediusMessageMapTest().get(reqPacket.getMediusMessageType());
+
+		if(mediusPacketTest != null) {
+			try {
+				mediusPacketTest.read(new NetInput(ByteBuffer.wrap(reqPacket.getMediusPayload())), client);
+
+				List<MediusPacket> mediusPackets = new ArrayList<>();
+				mediusPacketTest.write(mediusPackets, client);
+
+				for (MediusPacket packet : mediusPackets) {
+					logger.finest("--------- MEDIUS MESSAGE: " + packet.toString());
+
+					//System.out.println("_________________________" + Utils.bytesToHex(packet.toBytes()));
+					responses.add(new RTMessage(RtMessageId.SERVER_APP, packet.toBytes()));
+				}
+				return responses;
+			} catch (IOException exception) {
+				exception.printStackTrace();
+			}
+		}
+
+
 		// Detect which medius packet is being parsed
-		MediusPacketHandler mediusPacket = client.getMediusMessageMap().get(reqPacket.getMediusMessageType());		
+		net.hashsploit.clank.server.medius.MediusPacketHandler mediusPacket = client.getMediusMessageMap().get(reqPacket.getMediusMessageType());
 		
 		if (mediusPacket == null) {
 			logger.severe("Unknown medius packet handler found!: [MediusId: " + reqPacket.toString() + "\nRaw bytes: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(reqPacket.getFullMessage())) + "]");
 		}
-		
+
+
 		// Testing new packet
-		if (mediusPacket.getType() == MediusMessageType.LadderList_ExtraInfo) {
-			logger.info("LadderList_ExtraInfo called!");
-		}
+		//if (mediusPacket.getType() == MediusMessageType.LadderList_ExtraInfo) {
+		//	logger.info("LadderList_ExtraInfo called!");
+		//}
 		
 		// Process this medius packet
 		mediusPacket.read(client, new MediusMessage(reqPacket.getMediusMessageType(), reqPacket.getMediusPayload()));

@@ -15,7 +15,8 @@ public class AccountGetIdRequest extends MediusMessage {
 	
 	public AccountGetIdRequest(byte[] data) {
 		super(MediusMessageType.AccountGetId, data);
-		
+
+
 		ByteBuffer buf = ByteBuffer.wrap(data);
 		buf.get(messageID);
 		buf.get(sessionKey);

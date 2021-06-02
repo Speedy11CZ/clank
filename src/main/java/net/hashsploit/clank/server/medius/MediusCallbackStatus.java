@@ -1,6 +1,11 @@
 package net.hashsploit.clank.server.medius;
 
-public enum MediusCallbackStatus {
+import net.hashsploit.clank.server.medius.test.NetInput;
+import net.hashsploit.clank.server.medius.test.NetOutput;
+
+import java.io.IOException;
+
+public enum MediusCallbackStatus implements MediusSerializableObject{
 
 	/**
 	 * Session begin failed.
@@ -359,8 +364,13 @@ public enum MediusCallbackStatus {
 	
 	private final int value;
 
-	private MediusCallbackStatus(int value) {
+	MediusCallbackStatus(int value) {
 		this.value = value;
+	}
+
+	@Override
+	public void serialize(NetOutput netOutput) throws IOException {
+		netOutput.writeInt(value);
 	}
 
 	/**

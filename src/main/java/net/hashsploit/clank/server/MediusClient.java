@@ -14,13 +14,13 @@ import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.rt.RtMessageHandler;
 import net.hashsploit.clank.rt.RtPacketMap;
-import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusLobbyServer;
-import net.hashsploit.clank.server.medius.MediusMessageType;
-import net.hashsploit.clank.server.medius.MediusPacketHandler;
-import net.hashsploit.clank.server.medius.MediusServer;
+import net.hashsploit.clank.server.medius.*;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.medius.test.MediusPacketHandler;
+import net.hashsploit.clank.server.medius.test.handlers.accounts.MediusAccountLoginHandler;
+import net.hashsploit.clank.server.medius.test.handlers.accounts.MediusAccountUpdateStatsHandler;
+import net.hashsploit.clank.server.medius.test.handlers.clans.MediusCheckMyClanInvitationsHandler;
 import net.hashsploit.clank.server.pipeline.MuisHandler;
 import net.hashsploit.clank.server.pipeline.MasHandler;
 import net.hashsploit.clank.server.pipeline.MlsHandler;
@@ -28,7 +28,6 @@ import net.hashsploit.clank.server.pipeline.RtDecryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtEncryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtFrameDecoderHandler;
 import net.hashsploit.clank.server.pipeline.RtFrameEncoderHandler;
-import net.hashsploit.clank.server.pipeline.TestHandlerMUIS;
 import net.hashsploit.clank.server.pipeline.TimeoutHandler;
 import net.hashsploit.clank.utils.MediusMessageMapInitializer;
 import net.hashsploit.clank.utils.Utils;
@@ -54,7 +53,10 @@ public class MediusClient implements IClient {
 	
 	private Player player;
 	
-	protected HashMap<MediusMessageType, MediusPacketHandler> mediusMessageMap;
+	protected HashMap<MediusMessageType, net.hashsploit.clank.server.medius.MediusPacketHandler> mediusMessageMap;
+
+	protected HashMap<MediusMessageType, MediusPacketHandler> mediusMessageMapTest = new HashMap<>();
+
 	protected HashMap<RtMessageId, RtMessageHandler> rtMessageMap;
 
 	public MediusClient(MediusServer server, SocketChannel channel) {
@@ -69,10 +71,14 @@ public class MediusClient implements IClient {
 
 		if (server.getEmulationMode() == EmulationMode.MEDIUS_AUTHENTICATION_SERVER) {
 			this.mediusMessageMap = MediusMessageMapInitializer.getMasMap();
+			this.mediusMessageMapTest.put(MediusMessageType.AccountLogin, new MediusAccountLoginHandler());
 		}
 		else if (server.getEmulationMode() == EmulationMode.MEDIUS_LOBBY_SERVER) {
 			this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();
+			this.mediusMessageMapTest.put(MediusMessageType.CheckMyClanInvitations, new MediusCheckMyClanInvitationsHandler());
+			this.mediusMessageMapTest.put(MediusMessageType.AccountUpdateStats, new MediusAccountUpdateStatsHandler());
 		}
+
 		this.rtMessageMap = RtPacketMap.buildRtPacketMap();
 		
 		logger.fine(String.format("Client connected: %s:%d", getIPAddress(), getPort()));
@@ -367,10 +373,14 @@ public class MediusClient implements IClient {
 		return rtMessageMap.get(rtId);
 	}
 
-	public HashMap<MediusMessageType, MediusPacketHandler> getMediusMessageMap() {
+	public HashMap<MediusMessageType, net.hashsploit.clank.server.medius.MediusPacketHandler> getMediusMessageMap() {
 		return mediusMessageMap;
 	}
-	
+
+	public HashMap<MediusMessageType, MediusPacketHandler> getMediusMessageMapTest() {
+		return mediusMessageMapTest;
+	}
+
 	public String getIP() {
 		return getIPAddress();
 	}
