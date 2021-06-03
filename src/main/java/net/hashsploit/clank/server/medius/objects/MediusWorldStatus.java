@@ -1,6 +1,11 @@
 package net.hashsploit.clank.server.medius.objects;
 
-public enum MediusWorldStatus {
+import net.hashsploit.clank.server.medius.MediusSerializableObject;
+import net.hashsploit.clank.server.medius.test.NetOutput;
+
+import java.io.IOException;
+
+public enum MediusWorldStatus implements MediusSerializableObject {
 
 	WORLD_INACTIVE(0),
 
@@ -16,8 +21,12 @@ public enum MediusWorldStatus {
 
 	public final int value;
 
-	private MediusWorldStatus(int value) {
+	MediusWorldStatus(int value) {
 		this.value = value;
 	}
 
+	@Override
+	public void serialize(NetOutput netOutput) throws IOException {
+		netOutput.writeInt(value);
+	}
 }
