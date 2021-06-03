@@ -1,4 +1,4 @@
-package net.hashsploit.clank.server.medius.test.packets.channels;
+package net.hashsploit.clank.server.medius.test.packets;
 
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;

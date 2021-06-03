@@ -1,4 +1,4 @@
-package net.hashsploit.clank.server.medius.test.handlers.accounts;
+package net.hashsploit.clank.server.medius.test.handlers;
 
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.MasConfig;
@@ -10,8 +10,8 @@ import net.hashsploit.clank.server.medius.objects.*;
 import net.hashsploit.clank.server.medius.test.MediusPacket;
 import net.hashsploit.clank.server.medius.test.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.test.NetInput;
-import net.hashsploit.clank.server.medius.test.packets.accounts.MediusAccountLoginRequest;
-import net.hashsploit.clank.server.medius.test.packets.accounts.MediusAccountLoginResponse;
+import net.hashsploit.clank.server.medius.test.packets.MediusAccountLoginRequest;
+import net.hashsploit.clank.server.medius.test.packets.MediusAccountLoginResponse;
 import net.hashsploit.clank.server.rpc.PlayerLoginResponse;
 import net.hashsploit.clank.utils.Utils;
 

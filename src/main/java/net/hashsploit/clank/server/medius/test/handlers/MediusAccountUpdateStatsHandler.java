@@ -1,4 +1,4 @@
-package net.hashsploit.clank.server.medius.test.handlers.accounts;
+package net.hashsploit.clank.server.medius.test.handlers;
 
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
@@ -7,8 +7,8 @@ import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.test.MediusPacket;
 import net.hashsploit.clank.server.medius.test.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.test.NetInput;
-import net.hashsploit.clank.server.medius.test.packets.accounts.MediusAccountUpdateStatsRequest;
-import net.hashsploit.clank.server.medius.test.packets.accounts.MediusAccountUpdateStatsResponse;
+import net.hashsploit.clank.server.medius.test.packets.MediusAccountUpdateStatsRequest;
+import net.hashsploit.clank.server.medius.test.packets.MediusAccountUpdateStatsResponse;
 import net.hashsploit.clank.utils.Utils;
 
 import java.io.IOException;

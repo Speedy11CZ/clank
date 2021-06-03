@@ -1,4 +1,4 @@
-package net.hashsploit.clank.server.medius.test.packets.buddies;
+package net.hashsploit.clank.server.medius.test.packets;
 
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
