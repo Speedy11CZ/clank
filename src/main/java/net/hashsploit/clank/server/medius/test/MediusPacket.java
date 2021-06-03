@@ -6,8 +6,11 @@ import net.hashsploit.clank.utils.Utils;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 public abstract class MediusPacket {
+
+    protected static final Logger LOGGER = Logger.getLogger(MediusPacket.class.getName());
 
     private MediusMessageType packetType;
     private NetInput netInput;

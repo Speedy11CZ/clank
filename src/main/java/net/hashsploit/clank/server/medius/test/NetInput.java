@@ -199,12 +199,20 @@ public class NetInput {
         return length;
     }
 
+    public String readStringClean(int length) throws IOException {
+        return Utils.bytesToStringClean(this.readBytes(length));
+    }
+
     public String readString(int length) throws IOException {
         return Utils.parseMediusString(this.readBytes(length));
     }
 
     public String readString(MediusConstants mediusConstant) throws IOException {
         return this.readString(mediusConstant.value);
+    }
+
+    public String readStringClean(MediusConstants mediusConstant) throws IOException {
+        return this.readStringClean(mediusConstant.value);
     }
 
     public String readHexString(int length) throws IOException {

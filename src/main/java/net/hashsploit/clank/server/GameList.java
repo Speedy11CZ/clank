@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
+import net.hashsploit.clank.server.medius.test.packets.MediusCreateGameOneRequest;
 
 public class GameList {
 
@@ -19,8 +20,8 @@ public class GameList {
 		gameIdCounter = 1;
 	}
 
-	public int getNewGameId(CreateGameOneRequest req) {
-		gameSet.put(gameIdCounter, new MediusGame(gameIdCounter, req));
+	public int getNewGameId(MediusCreateGameOneRequest request) {
+		gameSet.put(gameIdCounter, new MediusGame(gameIdCounter, request));
 		gameIdCounter++;
 		return gameIdCounter - 1;
 	}

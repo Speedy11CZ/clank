@@ -1,6 +1,11 @@
 package net.hashsploit.clank.server.medius.objects;
 
-public enum MediusWorldSecurityLevelType {
+import net.hashsploit.clank.server.medius.MediusSerializableObject;
+import net.hashsploit.clank.server.medius.test.NetOutput;
+
+import java.io.IOException;
+
+public enum MediusWorldSecurityLevelType implements MediusSerializableObject {
 
 	/**
 	 * No security on world.
@@ -24,8 +29,16 @@ public enum MediusWorldSecurityLevelType {
 
 	public final int value;
 
-	private MediusWorldSecurityLevelType(int value) {
+	MediusWorldSecurityLevelType(int value) {
 		this.value = value;
 	}
 
+	@Override
+	public void serialize(NetOutput netOutput) throws IOException {
+		netOutput.writeInt(value);
+	}
+
+	public int getValue() {
+		return value;
+	}
 }

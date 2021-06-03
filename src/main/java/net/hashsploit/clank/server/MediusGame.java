@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
+import net.hashsploit.clank.server.medius.test.packets.MediusCreateGameOneRequest;
 
 public class MediusGame {
 
@@ -13,20 +14,20 @@ public class MediusGame {
 
 	private int worldId;
 	private HashSet<Player> players;
-	private CreateGameOneRequest req;
+	private MediusCreateGameOneRequest request;
 	
 	private byte[] stats = new byte[MediusConstants.GAMESTATS_MAXLEN.value];
 	private MediusWorldStatus worldStatus;
 
-	public MediusGame(int worldId, CreateGameOneRequest req) {
+	public MediusGame(int worldId, MediusCreateGameOneRequest request) {
 		this.worldId = worldId;
-		this.req = req;
+		this.request = request;
 		this.worldStatus = MediusWorldStatus.WORLD_PENDING_CREATION;
 		this.players = new HashSet<Player>();
 	}
 
-	public CreateGameOneRequest getReqPacket() {
-		return req;
+	public MediusCreateGameOneRequest getRequestPacket() {
+		return request;
 	}
 
 	public byte[] getStats() {
@@ -67,8 +68,8 @@ public class MediusGame {
 		return players;
 	}
 	
-	public static MediusGame buildEmptyGame(CreateGameOneRequest req) {
-		return new MediusGame(0, req);	
+	public static MediusGame buildEmptyGame(MediusCreateGameOneRequest request) {
+		return new MediusGame(0, request);
 	}
 
 }

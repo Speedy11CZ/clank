@@ -33,37 +33,11 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 
 	@Override
 	public List<MediusMessage> write(MediusClient client) {
-		String username = client.getPlayer().getUsername();
-		String chatMsg = Utils.bytesToStringClean(requestPacket.getText());
 
-		// FIXME: sanitize input, check for color parsing, check for muted, etc.
-
-		logger.finest("[CHAT] " + username + ": " + chatMsg);
-
-		// This should be ChatColor.strip() unless the player is an operator.
-		byte[] byteMsg = requestPacket.getText(); //Utils.padByteArray(ChatColor.parse(chatMsg), MediusConstants.CHATMESSAGE_MAXLEN.value);
-
-		ChatFwdMessageResponse responsePacket = new ChatFwdMessageResponse(requestPacket.getMessageId(), client.getPlayer().getAccountId(), Utils.buildByteArrayFromString(username, MediusConstants.USERNAME_MAXLEN.value), byteMsg, requestPacket.getMessageType());
-		int playerWorldId = client.getPlayer().getChatWorldId();
-		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-		HashSet<Player> playersInWorld = server.getLobbyWorldPlayers(playerWorldId);
-		
-		if (requestPacket.getMessageType() == MediusChatMessageType.BROADCAST) {
-			for (Player player : playersInWorld) {
-				if (player != client.getPlayer()) {
-					player.getClient().sendMediusMessage(responsePacket);
-				}
-			}
-		}
-		else if (requestPacket.getMessageType() == MediusChatMessageType.WHISPER) {
-			Player p = server.getPlayer(requestPacket.getTargetId());
-			if (p != null) {
-				p.getClient().sendMediusMessage(responsePacket);
-			}
-		}
-		else {
+		/*else {
 			logger.warning("Unimplemented MediusChatMessageType: " + requestPacket.getDebugString());
 		}
+		 */
 
 		return null;
 	}

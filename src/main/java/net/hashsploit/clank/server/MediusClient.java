@@ -1,5 +1,6 @@
 package net.hashsploit.clank.server;
 
+import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -17,10 +18,11 @@ import net.hashsploit.clank.rt.RtPacketMap;
 import net.hashsploit.clank.server.medius.*;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.medius.test.MediusPacket;
 import net.hashsploit.clank.server.medius.test.MediusPacketHandler;
-import net.hashsploit.clank.server.medius.test.handlers.accounts.MediusAccountLoginHandler;
-import net.hashsploit.clank.server.medius.test.handlers.accounts.MediusAccountUpdateStatsHandler;
-import net.hashsploit.clank.server.medius.test.handlers.clans.MediusCheckMyClanInvitationsHandler;
+import net.hashsploit.clank.server.medius.test.handlers.MediusAccountLoginHandler;
+import net.hashsploit.clank.server.medius.test.handlers.MediusAccountUpdateStatsHandler;
+import net.hashsploit.clank.server.medius.test.handlers.MediusCheckMyClanInvitationsHandler;
 import net.hashsploit.clank.server.pipeline.MuisHandler;
 import net.hashsploit.clank.server.pipeline.MasHandler;
 import net.hashsploit.clank.server.pipeline.MlsHandler;
@@ -268,10 +270,25 @@ public class MediusClient implements IClient {
 	 * 
 	 * @param msg
 	 */
+	@Deprecated
 	public void sendMediusMessage(MediusMessage msg) {
 		RTMessage packet = new RTMessage(RtMessageId.SERVER_APP, msg.toBytes());
 
 		logger.finer(String.format("Sending %s:%d: ", getIPAddress(), getPort(), msg.toString()));
+		logger.finest(String.format("Sending %s:%d byte payload: %s", getIPAddress(), getPort(), Utils.bytesToHex(Utils.nettyByteBufToByteArray(packet.getFullMessage()))));
+		this.sendMessage(packet);
+	}
+
+
+	/**
+	 * Send a Medius (RT SERVER_APP) packet.
+	 *
+	 * @param mediusPacket
+	 */
+	public void sendMediusPacket(MediusPacket mediusPacket) throws IOException {
+		RTMessage packet = new RTMessage(RtMessageId.SERVER_APP, mediusPacket.toBytes());
+
+		logger.finer(String.format("Sending %s:%d: %s", getIPAddress(), getPort(), mediusPacket));
 		logger.finest(String.format("Sending %s:%d byte payload: %s", getIPAddress(), getPort(), Utils.bytesToHex(Utils.nettyByteBufToByteArray(packet.getFullMessage()))));
 		this.sendMessage(packet);
 	}

@@ -17,6 +17,7 @@ import net.hashsploit.clank.server.medius.objects.Location;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
+import net.hashsploit.clank.server.medius.test.packets.MediusCreateGameOneRequest;
 import net.hashsploit.clank.server.rpc.ClankMlsRpcServer;
 import net.hashsploit.clank.server.rpc.RpcServerConfig;
 import net.hashsploit.clank.utils.Utils;
@@ -312,16 +313,11 @@ public class MediusLobbyServer extends MediusServer {
 		return MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED;
 	}
 
-	/**
-	 * Create a new game Id with the game request.
-	 * @param req
-	 * @return
-	 */
-	public synchronized int createGame(CreateGameOneRequest req) {
+	public synchronized int createGame(MediusCreateGameOneRequest request) {
 		int newGameId = gameIdCounter++;
-		
-		games.add(new MediusGame(newGameId, req));
-		
+
+		games.add(new MediusGame(newGameId, request));
+
 		return newGameId;
 	}
 
